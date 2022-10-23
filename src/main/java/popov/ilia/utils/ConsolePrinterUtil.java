@@ -52,6 +52,7 @@ public class ConsolePrinterUtil {
         System.out.println(contact.getFullFormatedPersonInfo());
     }
 
+    //todo make it more prettier and fitting the table perfectly
     public static void printFullDividerLine(){
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
     }
@@ -61,13 +62,10 @@ public class ConsolePrinterUtil {
 
     public static void printCommands() {
         System.out.println("This is simple address book java application.");
-        System.out.println("To view all persons print: all");
-        System.out.println("To add new person print: add");
-        System.out.println("To edit an existing person print: edit");
-        System.out.println("To delete an existing person print: delete");
+        System.out.println("To view all contacts print: all");
+        System.out.println("To add new contact print: add");
+        System.out.println("To view contact print: view");
         System.out.println("To save your changes print: save");
-        System.out.println("To view all friends print: friends");
-        System.out.println("To view all family print: family");
         System.out.println("To exit print: exit");
     }
 
