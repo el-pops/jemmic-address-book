@@ -1,41 +1,38 @@
 package popov.ilia.gui;
 
+import lombok.AllArgsConstructor;
 import popov.ilia.entities.FamilyContact;
 import popov.ilia.entities.FriendContact;
 import popov.ilia.entities.Contact;
-import popov.ilia.reposiroty.ContactRepository;
+import popov.ilia.reposiroty.ContactDao;
+import popov.ilia.reposiroty.ContactDaoInMemoryImpl;
 import popov.ilia.service.ContactService;
+import popov.ilia.service.ContactServiceImpl;
 import popov.ilia.utils.CommonConst;
 import popov.ilia.utils.FileUtils;
 import popov.ilia.utils.MappingUtils;
-import popov.ilia.utils.PrinterUtil;
+import popov.ilia.utils.ConsolePrinterUtil;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Scanner;
 
-public class ConsoleGui implements Gui {
-
+@AllArgsConstructor
+public class GuiConsoleImpl implements Gui {
 
     private final Scanner scanner;
-    private final ContactRepository contactRepository;
+    private final ContactDao contactDao;
     private final ContactService contactService;
-
-    public ConsoleGui() throws IOException {
-        scanner = new Scanner(System.in);
-        contactRepository = new ContactRepository(MappingUtils.mapStringsToContacts(FileUtils.readFromFile()));
-        contactService = new ContactService(contactRepository, scanner);
-    }
 
     @Override
     public void run() throws IOException {
         boolean exit = false;
-        PrinterUtil.clearConsole();
+        ConsolePrinterUtil.clearConsole();
         System.out.println("Welcome to address book application");
         while (!exit) {
             System.out.println("To view all commands print: commands");
             String command = scanner.nextLine();
-            PrinterUtil.clearConsole();
+            ConsolePrinterUtil.clearConsole();
             switch (command) {
                 case "all":
                     viewAllContacts();
@@ -44,17 +41,17 @@ public class ConsoleGui implements Gui {
                     addContact();
                     break;
                 case "exit":
-                    FileUtils.save(contactRepository.getAll());
+                    FileUtils.save(contactDao.getAll());
                     exit = true;
                     break;
                 case "save":
-                    FileUtils.save(contactRepository.getAll());
+                    FileUtils.save(contactDao.getAll());
                     break;
                 case "view":
                     viewContact();
                     break;
                 case "commands":
-                    PrinterUtil.printCommands();
+                    ConsolePrinterUtil.printCommands();
                     break;
                 default:
                     System.out.println("Not supported command");
@@ -67,7 +64,7 @@ public class ConsoleGui implements Gui {
     public void addContact() {
         Contact contact = getContactFromGui();
         contactService.addPerson(contact);
-        PrinterUtil.clearConsole();
+        ConsolePrinterUtil.clearConsole();
         System.out.println("You have successfully added new person");
     }
 
@@ -79,9 +76,9 @@ public class ConsoleGui implements Gui {
         fullName += scanner.nextLine();
         Optional<Contact> person = contactService.getPersonByName(fullName);
         if (person.isPresent()) {
-            PrinterUtil.printFullPersonInfo(person.get());
+            ConsolePrinterUtil.printFullPersonInfo(person.get());
             viewContactCommands(person.get());
-            PrinterUtil.clearConsole();
+            ConsolePrinterUtil.clearConsole();
         } else {
             System.out.println("Person with given name dont exist");
         }
@@ -130,13 +127,13 @@ public class ConsoleGui implements Gui {
                 break;
         }
         contactService.editPerson(oldFullName, contact);
-        PrinterUtil.clearConsole();
+        ConsolePrinterUtil.clearConsole();
         System.out.println("You have successfully modified " + contact.getName() + " " + contact.getSurname());
     }
 
     @Override
     public void viewAllContacts() {
-        PrinterUtil.printPersons(contactService.getAll());
+        ConsolePrinterUtil.printPersons(contactService.getAll());
     }
 
     public Contact getContactFromGui() {
@@ -154,23 +151,19 @@ public class ConsoleGui implements Gui {
         }
     }
 
-
-
-
-
     private void viewContactCommands(Contact contact) {
         System.out.println("Write 'edit' to edit this person, 'delete' to delete, 'back' to return to main screen");
         switch (scanner.nextLine()) {
             case "edit":
                 editContact(contact);
-                PrinterUtil.printFullPersonInfo(contact);
+                ConsolePrinterUtil.printFullPersonInfo(contact);
                 viewContactCommands(contact);
                 break;
             case "delete":
                 contactService.deletePersonByFullName(contact.getFullName());
                 break;
             case "back":
-                PrinterUtil.clearConsole();
+                ConsolePrinterUtil.clearConsole();
                 break;
             default:
                 System.out.println("Command not supported");

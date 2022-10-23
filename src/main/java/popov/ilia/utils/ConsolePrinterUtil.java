@@ -5,7 +5,7 @@ import popov.ilia.entities.Contact;
 import java.io.IOException;
 import java.util.Set;
 
-public class PrinterUtil {
+public class ConsolePrinterUtil {
 
     private static void printBasicTable() {
         System.out.format("%-16s %-16s", "Surname", "Name");

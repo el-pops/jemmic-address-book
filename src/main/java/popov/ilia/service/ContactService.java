@@ -1,50 +1,20 @@
 package popov.ilia.service;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import popov.ilia.entities.Contact;
-import popov.ilia.reposiroty.ContactRepository;
-
 
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class ContactService {
-    private ContactRepository contactRepository;
-    private Scanner scanner;
+public interface ContactService {
+    Set<Contact> getAll();
 
-    public Set<Contact> getAll(){
-        return contactRepository.getAll();
-    }
+    void addPerson(Contact contact);
 
-    public void addPerson(Contact contact) {
-        contactRepository.addPerson(contact);
-    }
+    boolean editPerson(String oldFullName, Contact changedContact);
 
-    public boolean editPerson(String oldFullName, Contact changedContact) {
-        if (personExists(oldFullName)) {
-            contactRepository.editPerson(changedContact);
-            if (!oldFullName.equals(changedContact.getName() + changedContact.getSurname())) {
-                contactRepository.deletePersonByFullName(oldFullName);
-            }
-            return true;
-        } else return false;
-    }
+    boolean personExists(String fullName);
 
-    public boolean personExists(String fullName) {
-        return contactRepository.getPersonByFullName(fullName).isPresent();
-    }
+    Optional<Contact> getPersonByName(String name);
 
-    public Optional<Contact> getPersonByName(String name){
-        return contactRepository.getPersonByFullName(name);
-    }
-
-    public void deletePersonByFullName(String fullName){
-        contactRepository.deletePersonByFullName(fullName);
-    }
+    void deletePersonByFullName(String fullName);
 }
